@@ -1,0 +1,9 @@
+monk="Repro"
+level=90
+race=orc
+spec=windwalker
+shoulder=,id=272244,bonus_id=13663/13935,drop_level=90
+finger1=,id=256972,bonus_id=13668/13902,drop_level=90
+main_hand=,id=268199,bonus_id=6652/12841/13334
+iterations=1
+max_time=5

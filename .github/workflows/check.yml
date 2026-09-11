@@ -1,0 +1,26 @@
+name: simc#11868 drop_level scaling on MSVC
+on: { workflow_dispatch: {} }
+jobs:
+  build-and-check:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { label: "before (c1935b9, the 09-08 nightly's commit)", ref: c1935b92f40d1063696861b0f4f6701e714ebd09 }
+          - { label: "after (c5788d6, the fix)", ref: c5788d63fd01d06c8d96a8ccffe2fb36c44f135b }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with: { repository: simulationcraft/simc, ref: "${{ matrix.ref }}", path: simc }
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Build simc (MSVC, Release)
+        shell: cmd
+        run: |
+          cmake -S simc -B simc\build -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_GUI=OFF
+          ninja -C simc\build simc
+      - name: Run the reproduction across 16 seeds
+        shell: cmd
+        run: |
+          simc\build\simc.exe display_build=1
+          python check.py simc\build\simc.exe "${{ matrix.label }}"
